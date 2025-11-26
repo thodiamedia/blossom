@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shuffle, Delete, Send } from 'lucide-react';
+import { Shuffle, Delete } from 'lucide-react';
 
 interface ControlsProps {
   currentInput: string;
@@ -14,7 +14,7 @@ interface ControlsProps {
 export const Controls: React.FC<ControlsProps> = ({
   currentInput,
   centerLetter,
-  isValidating,
+  isValidating, // kept in props interface for compatibility but unused visually
   onDelete,
   onShuffle,
   onSubmit,
@@ -55,11 +55,10 @@ export const Controls: React.FC<ControlsProps> = ({
 
         <button
           onClick={onSubmit}
-          disabled={!currentInput || isValidating}
+          disabled={!currentInput}
           className="px-6 py-3 rounded-full bg-stem text-white font-semibold shadow-md hover:bg-stem-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
         >
           <span>Enter</span>
-          {isValidating && <span className="animate-spin text-white">⟳</span>}
         </button>
       </div>
     </div>

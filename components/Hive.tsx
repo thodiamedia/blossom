@@ -55,7 +55,7 @@ export const Hive: React.FC<HiveProps> = ({
       {/* Outer Petals */}
       {outerLetters.map((letter, index) => (
         <div 
-          key={`${letter}-${index}`}
+          key={letter}
           className="absolute z-10 transition-all duration-500 ease-in-out"
           style={getPositionStyle(positions[index].deg)}
         >

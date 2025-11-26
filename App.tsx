@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Hive } from './components/Hive';
 import { Controls } from './components/Controls';
 import { ScoreBoard } from './components/ScoreBoard';
 import { WordList } from './components/WordList';
-import { generatePuzzle, validateWordWithGemini } from './services/geminiService';
+import { generatePuzzle } from './services/puzzleService';
 import { GameState, FoundWord, GameStatus } from './types';
 import { Flower } from 'lucide-react';
 
@@ -26,7 +26,6 @@ const App: React.FC = () => {
 
   const [status, setStatus] = useState<GameStatus>(GameStatus.IDLE);
   const [inputError, setInputError] = useState(false);
-  const [isValidating, setIsValidating] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
   // Initialize game
@@ -59,7 +58,7 @@ const App: React.FC = () => {
       });
       setStatus(GameStatus.PLAYING);
     } catch (err) {
-      setGameState(prev => ({ ...prev, loading: false, error: "Failed to load puzzle. Check API Key." }));
+      setGameState(prev => ({ ...prev, loading: false, error: "Failed to load puzzle." }));
     }
   };
 
@@ -103,7 +102,7 @@ const App: React.FC = () => {
     }, 2000);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (status !== GameStatus.PLAYING || !gameState.currentInput) return;
     
     const word = gameState.currentInput;
@@ -125,33 +124,15 @@ const App: React.FC = () => {
     }
 
     // Check against pre-fetched list
-    let isValid = validWords.has(word);
-    
-    // If not in pre-fetched list, verify with Gemini (fallback)
-    // Only verify remotely if the letters are valid composition
-    if (!isValid) {
-        const isComposedCorrectly = word.split('').every(l => allLetters.includes(l));
-        if (isComposedCorrectly) {
-            setIsValidating(true);
-            try {
-                isValid = await validateWordWithGemini(word, allLetters);
-            } catch {
-                isValid = false;
-            }
-            setIsValidating(false);
-        } else {
-             // Technically handled by UI only allowing clicks, but keyboard entry might bypass
-             showFeedback("Bad letters");
-             return;
-        }
-    }
+    // Since we have the full dictionary locally, we don't need fallback API validation
+    const isValid = validWords.has(word);
 
     if (isValid) {
         // Success Logic
         const isBonus = bonusLetter ? word.includes(bonusLetter) : false;
         // Check Pangram: Unique letters in word must equal 7
         const uniqueLetters = new Set(word.split(''));
-        const isPangram = uniqueLetters.size === 7; // Assuming 7 distinct letters in puzzle
+        const isPangram = uniqueLetters.size === 7; 
 
         const wordScore = calculateScore(word, isBonus, isPangram);
         
@@ -176,7 +157,7 @@ const App: React.FC = () => {
         if (newMovesMade >= maxMoves) {
             setStatus(GameStatus.GAME_OVER);
         } else {
-            // Visual success indicator?
+            // Visual success indicator
             setFeedbackMessage(`+${wordScore}`);
             setTimeout(() => setFeedbackMessage(null), 1500);
         }
@@ -208,7 +189,7 @@ const App: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, gameState.currentInput, gameState.outerLetters, gameState.centerLetter]); // Dependencies for closure freshness
+  }, [status, gameState.currentInput, gameState.outerLetters, gameState.centerLetter]);
 
   if (gameState.loading) {
     return (
@@ -281,7 +262,7 @@ const App: React.FC = () => {
       <Controls 
         currentInput={gameState.currentInput}
         centerLetter={gameState.centerLetter}
-        isValidating={isValidating}
+        isValidating={false}
         onDelete={handleDelete}
         onShuffle={handleShuffle}
         onSubmit={handleSubmit}
