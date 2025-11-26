@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blossom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              pollen: '#FCD34D',
+              petal: '#FCE7F3',
+              'petal-hover': '#FBCFE8',
+              'petal-bonus': '#FDA4AF',
+              stem: '#10B981',
+              'stem-dark': '#047857',
+            },
+            animation: {
+              'spin-slow': 'spin 3s linear infinite',
+              'bounce-short': 'bounce 0.5s ease-in-out 1',
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+              'slide-up': 'slideUp 0.3s ease-out forwards',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(10px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              }
+            }
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      @layer components {
+        .petal {
+          @apply w-full h-full drop-shadow-md transition-colors duration-200 fill-white text-slate-800 group-hover:fill-petal-hover;
+        }
+        .petal.bonus {
+          @apply fill-petal-bonus text-pink-900 group-hover:fill-pink-300;
+        }
+        .pistil {
+          @apply w-full h-full drop-shadow-md transition-colors duration-200 fill-pollen text-amber-900 group-hover:fill-amber-300;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-gradient-to-br from-green-50 to-emerald-100 min-h-screen text-slate-800 font-sans selection:bg-pink-200">
+    <div id="root"></div>
+  </body>
+</html>

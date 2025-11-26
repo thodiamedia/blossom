@@ -1,0 +1,5 @@
+{
+  "name": "Blossom",
+  "description": "A botanical word puzzle game powered by Gemini. Create words using 7 letters, find the pangrams, and maximize your score within 12 moves.",
+  "requestFramePermissions": []
+}
