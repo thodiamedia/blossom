@@ -107,7 +107,6 @@ const App: React.FC = () => {
     
     const word = gameState.currentInput;
     const { centerLetter, outerLetters, validWords, foundWords, movesMade, maxMoves, bonusLetter } = gameState;
-    const allLetters = [centerLetter, ...outerLetters];
 
     // Basic Validation Rules
     if (word.length < 4) {
@@ -124,7 +123,6 @@ const App: React.FC = () => {
     }
 
     // Check against pre-fetched list
-    // Since we have the full dictionary locally, we don't need fallback API validation
     const isValid = validWords.has(word);
 
     if (isValid) {

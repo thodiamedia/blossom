@@ -59,7 +59,7 @@ export const Petal: React.FC<PetalProps> = ({
       </span>
       {isBonus && !isCenter && (
         <span 
-            className="absolute bottom-6 left-1/2 text-[10px] font-bold text-pink-900 opacity-60 pointer-events-none"
+            className="absolute bottom-8 left-1/2 text-[10px] font-bold text-pink-900 opacity-70 pointer-events-none"
             style={{ transform: `translate(-50%, 0) rotate(${-rotation}deg)` }}
         >
           x2

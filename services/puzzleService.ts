@@ -2,27 +2,22 @@ import { WORDS } from './dictionary';
 import { PuzzleData } from '../types';
 
 export const generatePuzzle = async (): Promise<PuzzleData> => {
+  // Simulating async for UI consistency
   return new Promise((resolve) => {
     setTimeout(() => {
       const minLength = 4;
+      // Filter strictly for length to be safe
       const wordList = WORDS.filter(w => w.length >= minLength).map(w => w.toUpperCase());
       
-      // Find pangrams (words with exactly 7 unique letters)
+      // Identify pangrams (7 unique letters) from the word list
       const pangrams = wordList.filter(w => new Set(w).size === 7);
       
-      if (pangrams.length === 0) {
-         // Fallback if no pangrams found (unlikely with full dictionary)
-         resolve({
-             centerLetter: 'L',
-             outerLetters: ['B', 'O', 'S', 'M', 'E', 'A'],
-             validWords: ['FLOWERS', 'LOWER', 'FLOWER', 'ROWER', 'SOWER', 'SLOW', 'FLOW', 'WOLF', 'ROLE', 'ROSE', 'SORE', 'LOSE', 'LESS', 'SEER', 'FEEL', 'FLEE', 'FREE', 'REEL'],
-             pangrams: ['FLOWERS']
-         });
-         return;
+      // Fallback if something goes wrong with the list
+      let seedWord = "FLOWERS";
+      if (pangrams.length > 0) {
+        seedWord = pangrams[Math.floor(Math.random() * pangrams.length)];
       }
 
-      // Select a random pangram
-      const seedWord = pangrams[Math.floor(Math.random() * pangrams.length)];
       const uniqueLetters = Array.from(new Set(seedWord));
       
       // Select center letter
@@ -40,7 +35,8 @@ export const generatePuzzle = async (): Promise<PuzzleData> => {
 
       const allLettersSet = new Set(uniqueLetters);
 
-      // Find all valid words
+      // Find all valid words from our dictionary that can be formed with these letters
+      // and must contain the center letter.
       const validWords = wordList.filter(word => {
         // Must contain center letter
         if (!word.includes(centerLetter)) return false;
@@ -53,7 +49,7 @@ export const generatePuzzle = async (): Promise<PuzzleData> => {
         return true;
       });
       
-      // Find pangrams within valid words (includes the seed word and potential others)
+      // Identify pangrams within the valid words for scoring/display
       const puzzlePangrams = validWords.filter(w => new Set(w).size === 7);
 
       resolve({
@@ -62,6 +58,6 @@ export const generatePuzzle = async (): Promise<PuzzleData> => {
         validWords,
         pangrams: puzzlePangrams
       });
-    }, 100); // Small delay to simulate async if needed, but mostly for UI feel
+    }, 100);
   });
 };
